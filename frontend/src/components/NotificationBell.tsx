@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNotifications } from '@/hooks/useNotifications';
 import { useWalletStore } from '@/store/walletStore';
+import { NotificationScheduleModal } from './NotificationScheduleModal';
 import Link from 'next/link';
 
 export default function NotificationBell() {
@@ -18,6 +19,7 @@ export default function NotificationBell() {
   } = useNotifications();
 
   const [isOpen, setIsOpen] = useState(false);
+  const [scheduleOpen, setScheduleOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown on click outside
@@ -118,6 +120,16 @@ export default function NotificationBell() {
             </div>
 
             <div className="flex items-center space-x-3">
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  setScheduleOpen(true);
+                }}
+                className="text-[11px] font-semibold text-amber-400 hover:text-amber-300 transition-colors"
+                title="Milestone reminder schedule"
+              >
+                ⏰ Reminders
+              </button>
               {unreadCount > 0 && (
                 <button
                   onClick={markAllAsRead}
@@ -229,6 +241,12 @@ export default function NotificationBell() {
           )}
         </div>
       )}
+
+      <NotificationScheduleModal
+        project={null}
+        isOpen={scheduleOpen}
+        onClose={() => setScheduleOpen(false)}
+      />
     </div>
   );
 }
