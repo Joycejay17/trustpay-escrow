@@ -1,15 +1,17 @@
 'use client';
 
 import React from 'react';
-import { useWalletStore } from '@/store/walletStore';
+import { useWalletStore, useActiveWalletAddress } from '@/store/walletStore';
 import { ClientDashboard } from './ClientDashboard';
 import { FreelancerDashboard } from './FreelancerDashboard';
 import WalletConnect from './WalletConnect';
 import NotificationBell from './NotificationBell';
+import { OrgWalletSwitcher } from './OrgWalletSwitcher';
 import { CryptoId } from '@/components/ui/CryptoId';
 
 export function DashboardRouter() {
   const { address, activeRole, setActiveRole, disconnect } = useWalletStore();
+  const activeWalletAddress = useActiveWalletAddress() || address;
 
   // AUTH GUARD: If user has not connected wallet, block dashboard and require wallet connect
   if (!address) {
@@ -50,7 +52,7 @@ export function DashboardRouter() {
           <span className="text-[#52525b]">|</span>
           <span className="text-[#a1a1aa]">Wallet:</span>
           <CryptoId
-            value={address}
+            value={activeWalletAddress ?? ''}
             head={6}
             tail={4}
             className="font-semibold text-white bg-[#27272a] px-2.5 py-0.5 rounded-md border border-[#3f3f46]"
@@ -65,6 +67,7 @@ export function DashboardRouter() {
 
         {/* Right Section: Notification Bell & Mode Switcher */}
         <div className="flex items-center space-x-4">
+          <OrgWalletSwitcher />
           <NotificationBell />
 
           <div className="flex items-center space-x-2">
