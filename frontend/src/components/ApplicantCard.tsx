@@ -29,11 +29,19 @@ export interface ApplicantCardProps {
   isProcessing?: boolean;
 }
 
-export function ApplicantCard({ applicant, onAccept, onDeny, onOpenChat, onOpenProfile, isProcessing = false }: ApplicantCardProps) {
+export function ApplicantCard({
+  applicant,
+  onAccept,
+  onDeny,
+  onOpenChat,
+  onOpenProfile,
+  isProcessing = false,
+}: ApplicantCardProps) {
   const [copied, setCopied] = useState(false);
   const [actionLoading, setActionLoading] = useState<'accept' | 'deny' | null>(null);
 
-  const walletAddr = applicant.stellar_address || applicant.freelancer_address || applicant.name || 'GAUBK...NLSGV';
+  const walletAddr =
+    applicant.stellar_address || applicant.freelancer_address || applicant.name || 'GAUBK...NLSGV';
   const coverText = applicant.cover_note || applicant.pitch || 'No cover note provided.';
   const portfolioUrl = applicant.portfolio_url;
   const currentStatus = applicant.status || (applicant.granted ? 'accepted' : 'pending');
@@ -66,8 +74,7 @@ export function ApplicantCard({ applicant, onAccept, onDeny, onOpenChat, onOpenP
   };
 
   return (
-    <div className="bg-[#1c1c20]/90 border border-[#27272a] hover:border-[#3f3f46] rounded-2xl p-5 sm:p-6 space-y-4 shadow-xl transition-all duration-200">
-      
+    <div className="bg-[#1c1c20]/90 border border-[#27272a] rounded-2xl p-5 sm:p-6 space-y-4 shadow-xl card-hover-border">
       {/* Top Bar: Wallet Address & Status Badge */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#27272a]/60">
         <div className="space-y-1">
@@ -96,7 +103,7 @@ export function ApplicantCard({ applicant, onAccept, onDeny, onOpenChat, onOpenP
 
         {/* Status Badge */}
         <div className="self-start sm:self-center">
-          {(currentStatus === 'pending') && (
+          {currentStatus === 'pending' && (
             <span className="px-3 py-1 bg-[#451a03] text-[#f97316] border border-[#78350f] text-xs font-semibold rounded-full inline-flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-[#f97316] animate-pulse"></span>
               Pending Review
@@ -119,9 +126,7 @@ export function ApplicantCard({ applicant, onAccept, onDeny, onOpenChat, onOpenP
 
       {/* Cover Note Section */}
       <div className="space-y-1.5">
-        <h4 className="text-xs font-bold text-[#e4e4e7] uppercase tracking-wider">
-          Cover Note
-        </h4>
+        <h4 className="text-xs font-bold text-[#e4e4e7] uppercase tracking-wider">Cover Note</h4>
         <p className="text-xs sm:text-sm text-[#a1a1aa] leading-relaxed whitespace-pre-line bg-[#18181b] p-3.5 rounded-xl border border-[#27272a]">
           &quot;{coverText}&quot;
         </p>
@@ -195,13 +200,10 @@ export function ApplicantCard({ applicant, onAccept, onDeny, onOpenChat, onOpenP
                 <span>💬 Chat with Freelancer</span>
               </button>
             )}
-            <span className="text-xs text-[#71717a] italic">
-              Application accepted.
-            </span>
+            <span className="text-xs text-[#71717a] italic">Application accepted.</span>
           </div>
         )}
       </div>
-
     </div>
   );
 }

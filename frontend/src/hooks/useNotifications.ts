@@ -1,10 +1,12 @@
 import { authFetch } from '@/lib/api';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useWalletStore } from '@/store/walletStore';
 import {
   DEFAULT_NOTIFICATION_PREFERENCES,
   NotificationItem,
   NotificationPreferences,
+  NotificationCategory,
+  getNotificationCategory,
 } from '@/types/notification';
 import { toast } from 'sonner';
 
@@ -17,6 +19,7 @@ export function useNotifications() {
   const [loading, setLoading] = useState<boolean>(false);
   const [preferences, setPreferences] = useState<NotificationPreferences>(DEFAULT_NOTIFICATION_PREFERENCES);
   const [preferencesLoading, setPreferencesLoading] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState<NotificationCategory>('all');
 
   const fetchNotifications = useCallback(async (silent = false) => {
     if (!address) {
@@ -255,9 +258,38 @@ export function useNotifications() {
     }
   };
 
+  const filteredNotifications = useMemo(() => {
+    if (activeTab === 'all') return notifications;
+    return notifications.filter((n) => getNotificationCategory(n) === activeTab);
+  }, [notifications, activeTab]);
+
+  const unreadCountsByCategory = useMemo(() => {
+    const counts: Record<NotificationCategory, number> = {
+      all: 0,
+      escrow: 0,
+      proposals: 0,
+      disputes: 0,
+      system: 0,
+    };
+    notifications.forEach((item) => {
+      if (!item.is_read) {
+        counts.all += 1;
+        const cat = getNotificationCategory(item);
+        if (cat in counts) {
+          counts[cat] += 1;
+        }
+      }
+    });
+    return counts;
+  }, [notifications]);
+
   return {
     notifications,
+    filteredNotifications,
     unreadCount,
+    unreadCountsByCategory,
+    activeTab,
+    setActiveTab,
     loading,
     preferences,
     preferencesLoading,
